@@ -10,7 +10,7 @@ public class UserRepository {
 
     private Map<Long, User> userMap = new ConcurrentHashMap<>();
 
-    private AtomicLong identity = new AtomicLong(10000);
+    private AtomicLong identity = new AtomicLong(0);
 
     public List<User> findAll() {
         return new ArrayList<>(userMap.values());
@@ -26,7 +26,7 @@ public class UserRepository {
         userMap.put(id, user);
     }
 
-    public void update (User user){
+    public void update(User user){
         userMap.put(user.getId(), user);
     }
 

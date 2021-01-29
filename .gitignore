@@ -1,0 +1,6 @@
+.idea
+*.iml
+
+**/target
+# Project exclude paths
+/les1-servlet-api/target/
