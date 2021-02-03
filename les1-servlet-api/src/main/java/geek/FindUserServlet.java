@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/user/*")
+@WebServlet("/users/*")
 public class FindUserServlet extends HttpServlet {
 
     private UserRepository userRepository;

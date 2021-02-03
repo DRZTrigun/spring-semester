@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/list-of-users")
-public class ListOfUserSerlet extends HttpServlet {
+public class ListOfUserServlet extends HttpServlet {
 
     private UserRepository userRepository;
 
@@ -35,7 +35,7 @@ public class ListOfUserSerlet extends HttpServlet {
             j = j + 1;
             resp.getWriter().println("<tr>");
             resp.getWriter().println("<th>" + j + "</th>");
-            resp.getWriter().println("<th>" + user.getUsername() + "</th>");
+            resp.getWriter().println("<th> <a href='" + getServletContext().getContextPath() + "/user/" + user.getId() + "'>" + user.getUsername() + "</a></th>");
             resp.getWriter().println("<th>" + user.getId() + "</th>");
             resp.getWriter().println("</tr>");
         }
