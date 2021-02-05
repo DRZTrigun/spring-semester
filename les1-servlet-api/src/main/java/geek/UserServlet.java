@@ -41,7 +41,8 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
-        resp.getWriter().println("<p>Id:" + user.getId() +"</p>");
-        resp.getWriter().println("<p>userName:" + user.getUsername() + "</p>");
+        resp.getWriter().println("<p>Id: " + user.getId() +"</p>");
+        resp.getWriter().println("<p>userName: " + user.getUsername() + "</p>");
     }
+
 }
