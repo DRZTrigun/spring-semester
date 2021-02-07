@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <!-- Required meta tags -->
@@ -35,7 +35,7 @@
 <div class="container">
     <div class="row py-2">
         <div class="col-12">
-            <a class="btn btn-primary" href="user_form.html">Add User</a>
+            <a class="btn btn-primary" th:href="@{/product/new}">Добавить товар</i></a>
         </div>
 
         <div class="col-12">
@@ -43,17 +43,23 @@
                 <thead>
                 <tr>
                     <th scope="col">Id</th>
-                    <th scope="col">Username</th>
+                    <th scope="col">ProductName</th>
+                    <th scope="col">DescriptionProduct</th>
+                    <th scope="col">Price</th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Alex</td>
+                <tr th:each="product : ${products}" >
+                    <th th:text="${product.id}" scope="row">1</th>
+                    <td th:text="${product.productname}" scope="row">2</td>
+                    <td th:text="${product.descriptionproduct}" scope="row">3</td>
+                    <td th:text="${product.price}" scope="row">4</td>
                     <td>
-                        <a class="btn btn-success" href="user_form.html"><i class="fas fa-edit"></i></a>
-                        <a class="btn btn-danger" href="#"><i class="far fa-trash-alt"></i></a>
+                        <a class="btn btn-success" th:href="@{/product/{id}(id = ${product.id})}"><i class="fas fa-edit"></i></a>
+                        <form class="d-inline" th:method="delete" th:action="@{/product/{id}(id = ${product.id})}">
+                            <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>
