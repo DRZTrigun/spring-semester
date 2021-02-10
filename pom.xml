@@ -20,6 +20,8 @@
         <module>les1-servlet-api</module>
         <module>les2-spring-basics</module>
         <module>les3-spring-mvc</module>
+        <module>les5-hibernate</module>
+        <module>les5-hibernate-home</module>
     </modules>
 
 

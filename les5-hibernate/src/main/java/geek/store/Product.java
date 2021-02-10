@@ -1,22 +1,26 @@
 package geek.store;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "products")
+@NamedQueries({
+        @NamedQuery(name = "productByName", query = "from Product p where p.productname=:productname"),
+        @NamedQuery(name = "allProducts", query = "from Product")
+})
 public class Product {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
+    @Column(length = 128, unique = true, nullable = false)
     private String productname;
 
-    @NotEmpty
-    private String descriptionproduct;
-
-    @NotNull
-    @Positive
+    @Column(nullable = false)
     private Double price;
+
+    private String descriptionproduct;
 
     public Long getId() {
         return id;
@@ -24,7 +28,6 @@ public class Product {
 
     public Product(){
     }
-
 
     public Product(String productname, String descriptionproduct, Double price) {
         this.productname = productname;
@@ -58,5 +61,15 @@ public class Product {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", productname='" + productname + '\'' +
+                ", price=" + price +
+                ", descriptionproduct='" + descriptionproduct + '\'' +
+                '}';
     }
 }
