@@ -1,4 +1,4 @@
-package geek.store;
+package geek;
 
 import org.springframework.stereotype.Repository;
 
