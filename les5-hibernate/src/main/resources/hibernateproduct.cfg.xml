@@ -16,5 +16,7 @@
         <property name="hibernate.format_sql">true</property>
 
         <mapping class="geek.store.Product"/>
+        <mapping class="geek.store.Shopper"/>
+        <mapping class="geek.store.ProductInformation"/>
     </session-factory>
 </hibernate-configuration>

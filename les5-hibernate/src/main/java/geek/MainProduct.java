@@ -81,7 +81,7 @@ public class MainProduct {
 //
 //        em.close();
 //
-//        DELETE
+//        //DELETE
 //
 //        em.getTransaction().begin();
 //
