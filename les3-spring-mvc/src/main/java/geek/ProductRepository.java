@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Repository
 public class ProductRepository {
 
+    // Identity Map
     private Map<Long, Product> productMap = new ConcurrentHashMap<>();
 
     private AtomicLong identityProduct = new AtomicLong(0);

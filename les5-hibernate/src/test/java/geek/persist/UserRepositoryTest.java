@@ -6,6 +6,7 @@ import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManagerFactory;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,10 +21,14 @@ class UserRepositoryTest {
 
     @Before
     public void initTest(EntityManagerFactory emFactory){
-        userRepository = new UserRepository(emFactory);
-        EntityManagerFactory emF = new Configuration()
-                .configure("hibernate.cfg.xml")
-                .buildSessionFactory();
+        User user1 = new User("user1","user1","user1@mail.user");
+        User user2 = new User("user2","user2","user2@mail.user");
+        User user3 = new User("user3","user3","user3@mail.user");
+        List<User> userList = new ArrayList<>();
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userRepository = new UserRepository((EntityManagerFactory) userList);
     }
 
     @Test

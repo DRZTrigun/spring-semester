@@ -1,6 +1,7 @@
 package geek.store;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -20,23 +21,31 @@ public class Product {
     @Column(nullable = false)
     private Double price;
 
-    private String descriptionproduct;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "products_shoppers",
+            joinColumns = @JoinColumn(name = "products_id"),
+            inverseJoinColumns = @JoinColumn(name = "shoppers_id")
+    )
+    private List<Shopper> shoppers;
 
-    public Long getId() {
-        return id;
-    }
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductInformation> productInformations;
 
     public Product(){
     }
 
-    public Product(String productname, String descriptionproduct, Double price) {
+    public Product(String productname, Double price) {
         this.productname = productname;
-        this.descriptionproduct = descriptionproduct;
         this.price = price;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getProductname() {
@@ -47,14 +56,6 @@ public class Product {
         this.productname = productname;
     }
 
-    public String getDescriptionproduct() {
-        return descriptionproduct;
-    }
-
-    public void setDescriptionproduct(String descriptionproduct) {
-        this.descriptionproduct = descriptionproduct;
-    }
-
     public Double getPrice() {
         return price;
     }
@@ -63,13 +64,21 @@ public class Product {
         this.price = price;
     }
 
+    public List<Shopper> getShoppers() {
+        return shoppers;
+    }
+
+    public void setShoppers(List<Shopper> shoppers) {
+        this.shoppers = shoppers;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
                 "id=" + id +
                 ", productname='" + productname + '\'' +
                 ", price=" + price +
-                ", descriptionproduct='" + descriptionproduct + '\'' +
+                ", descriptionproduct='" + '\'' +
                 '}';
     }
 }
