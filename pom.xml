@@ -22,6 +22,8 @@
         <module>les3-spring-mvc</module>
         <module>les5-hibernate</module>
         <module>les5-hibernate-home</module>
+        <module>les4And6-spring</module>
+        <module>les7And4-spring</module>
     </modules>
 
 

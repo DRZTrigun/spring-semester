@@ -18,5 +18,6 @@
         <mapping class="geek.store.Product"/>
         <mapping class="geek.store.Shopper"/>
         <mapping class="geek.store.ProductInformation"/>
+        <mapping class="geek.store.LineItemStore"/>
     </session-factory>
 </hibernate-configuration>

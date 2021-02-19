@@ -21,13 +21,8 @@ public class Shopper {
     @Column(length = 512, nullable = false)
     private String password;
 
-    @ManyToMany
-    @JoinTable(
-            name = "products_shoppers",
-            joinColumns = @JoinColumn(name = "shoppers_id"),
-            inverseJoinColumns = @JoinColumn(name = "products_id")
-    )
-    private List<Product> products;
+    @OneToMany(mappedBy = "shopper")
+    private List<LineItemStore> lineItem;
 
     public Shopper() {
     }
@@ -65,12 +60,12 @@ public class Shopper {
         this.password = password;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public List<LineItemStore> getLineItem() {
+        return lineItem;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setLineItem(List<LineItemStore> lineItem) {
+        this.lineItem = lineItem;
     }
 
     @Override
@@ -79,7 +74,6 @@ public class Shopper {
                 "id=" + id +
                 ", username='" + shoppername + '\'' +
                 ", password='" + password + '\'' +
-                ", products=" + products +
-                '}';
+                ", products=" + '}';
     }
 }

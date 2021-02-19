@@ -19,5 +19,7 @@
         <mapping class="geek.persist.User"/>
         <mapping class="geek.persist.Contact"/>
         <mapping class="geek.persist.Role"/>
+        <mapping class="geek.persist.Product"/>
+        <mapping class="geek.persist.LineItem"/>
     </session-factory>
 </hibernate-configuration>
