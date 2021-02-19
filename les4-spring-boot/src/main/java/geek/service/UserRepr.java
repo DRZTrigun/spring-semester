@@ -1,45 +1,40 @@
-package geek.persist;
+package geek.service;
 
-import geek.service.UserRepr;
+import geek.persist.User;
 
-import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 
-@Entity
-@Table(name = "users")
-public class User {
+//DTO
+public class UserRepr {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @NotEmpty
     private String username;
 
-    @Column(nullable = false, length = 512)
+    @NotEmpty
     private String password;
 
-    @Column
+    @NotEmpty
+    private String matchingPassword;
+
+    @Email
     private String email;
 
-    public User() {
+    public UserRepr() {
     }
 
-    public User(String username){
+    public UserRepr(String username){
         this.username = username;
     }
 
-    public User(UserRepr user){
+    public UserRepr(User user){
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.email = user.getEmail();
     }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) { this.password = password; }
 
     public Long getId() {
         return id;
@@ -57,6 +52,10 @@ public class User {
         this.username = username;
     }
 
+    public String getPassword() { return password; }
+
+    public void setPassword(String password) { this.password = password; }
+
     public String getEmail() {
         return email;
     }
@@ -65,4 +64,11 @@ public class User {
         this.email = email;
     }
 
+    public String getMatchingPassword() {
+        return matchingPassword;
+    }
+
+    public void setMatchingPassword(String matchingPassword) {
+        this.matchingPassword = matchingPassword;
+    }
 }

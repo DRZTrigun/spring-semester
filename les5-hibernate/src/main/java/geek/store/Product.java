@@ -1,12 +1,13 @@
 package geek.store;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
 @Table(name = "products")
 @NamedQueries({
-        @NamedQuery(name = "productByName", query = "from Product p where p.productname=:productname"),
+        @NamedQuery(name = "productByName", query = "from Product p where p.title=:title"),
         @NamedQuery(name = "allProducts", query = "from Product")
 })
 public class Product {
@@ -16,18 +17,13 @@ public class Product {
     private Long id;
 
     @Column(length = 128, unique = true, nullable = false)
-    private String productname;
+    private String title;
 
     @Column(nullable = false)
-    private Double price;
+    private BigDecimal price;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "products_shoppers",
-            joinColumns = @JoinColumn(name = "products_id"),
-            inverseJoinColumns = @JoinColumn(name = "shoppers_id")
-    )
-    private List<Shopper> shoppers;
+    @OneToMany(mappedBy = "product")
+    private List<LineItemStore> lineItem;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductInformation> productInformations;
@@ -35,8 +31,8 @@ public class Product {
     public Product(){
     }
 
-    public Product(String productname, Double price) {
-        this.productname = productname;
+    public Product(String title, BigDecimal price) {
+        this.title = title;
         this.price = price;
     }
 
@@ -48,35 +44,43 @@ public class Product {
         return id;
     }
 
-    public String getProductname() {
-        return productname;
-    }
-
-    public void setProductname(String productname) {
-        this.productname = productname;
-    }
-
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public List<Shopper> getShoppers() {
-        return shoppers;
+    public String getTitle() {
+        return title;
     }
 
-    public void setShoppers(List<Shopper> shoppers) {
-        this.shoppers = shoppers;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public List<LineItemStore> getLineItem() {
+        return lineItem;
+    }
+
+    public void setLineItem(List<LineItemStore> lineItem) {
+        this.lineItem = lineItem;
+    }
+
+    public List<ProductInformation> getProductInformations() {
+        return productInformations;
+    }
+
+    public void setProductInformations(List<ProductInformation> productInformations) {
+        this.productInformations = productInformations;
     }
 
     @Override
     public String toString() {
         return "Product{" +
                 "id=" + id +
-                ", productname='" + productname + '\'' +
+                ", productname='" + title + '\'' +
                 ", price=" + price +
                 ", descriptionproduct='" + '\'' +
                 '}';
