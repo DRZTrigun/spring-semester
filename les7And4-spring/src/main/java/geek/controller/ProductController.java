@@ -5,12 +5,17 @@ import geek.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,22 +27,35 @@ public class ProductController {
 
     private final ProductService productService;
 
+
+
+    private final Sort defualt = Sort.by("id");
+
     @Autowired
     public ProductController(ProductService productService){
         this.productService = productService;
     }
 
     @GetMapping
-    public String ListPage(Model model, @RequestParam(name = "TitleFilter") Optional<String> TitleFilter){
+    public String ListPage(Model model, @RequestParam(name = "titleFilter") Optional<String> titleFilter,
+                           @RequestParam("priceMinFilter")Optional<BigDecimal> priceMinFilter,
+                           @RequestParam("priceMaxFilter")Optional<BigDecimal> priceMaxFilter,
+                           @RequestParam("page")Optional<Integer> page,
+                           @RequestParam("size")Optional<Integer> size,
+                           @RequestParam("sort")Optional<String> sortStr
+    ){
         logger.info("List page requested");
 
-        List<ProductRepr> product;
-        if (TitleFilter.isPresent() && !TitleFilter.get().isBlank()){
-            product = productService.findByTitle(TitleFilter.get());
-        } else {
-            product = productService.findAll();
-        }
-        model.addAttribute("products", product);
+        Sort sort = sortStr.map(Sort::by).orElse(defualt);
+        Page<ProductRepr> products = productService.findByFilter(
+                titleFilter.filter(s -> s.isBlank()).orElse(null),
+                priceMinFilter.orElse(null),
+                priceMaxFilter.orElse(null),
+                page.orElse(1) - 1,
+                size.orElse(4),
+                sort.descending()
+        );
+        model.addAttribute("products", products);
         return "product";
     }
 
@@ -51,7 +69,7 @@ public class ProductController {
     }
 
     @PostMapping("/update")
-    public String update(@Valid ProductRepr product, BindingResult result){
+    public String update(@Valid @ModelAttribute("product") ProductRepr product, BindingResult result, Model model){
         logger.info("Update or create endpoint requested");
 
         // проверка на валидность(должно быть заполнено имя товара, описание и указана цена(должно быть строго больше 0)
@@ -78,5 +96,12 @@ public class ProductController {
 
         productService.delete(id);
         return "redirect:/product";
+    }
+
+    @ExceptionHandler
+    public ModelAndView notFoundExceptionHandler(NotFoundException ex){
+        ModelAndView mav = new ModelAndView("not_found");
+        mav.setStatus(HttpStatus.NOT_FOUND);
+        return  mav;
     }
 }
