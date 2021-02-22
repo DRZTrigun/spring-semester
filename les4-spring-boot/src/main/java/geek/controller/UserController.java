@@ -2,16 +2,20 @@ package geek.controller;
 
 import geek.service.UserRepr;
 import geek.service.UserService;
+import geek.service.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -20,7 +24,11 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
+    private UserServiceImpl UserServiceImpl;
+
     private final UserService userService;
+
+    private final Sort defaultSort = Sort.unsorted();
 
     @Autowired
     public UserController(UserService userService) {
@@ -28,15 +36,23 @@ public class UserController {
     }
 
     @GetMapping
-    public String ListPage(Model model, @RequestParam("usernameFilter") Optional<String> usernameFilter){
+    public String ListPage(Model model, @RequestParam("usernameFilter") Optional<String> usernameFilter,
+                           @RequestParam("ageMinFilter")Optional<Integer> ageMinFilter,
+                           @RequestParam("ageMaxFilter")Optional<Integer> ageMaxFilter,
+                           @RequestParam("page") Optional<Integer> page,
+                           @RequestParam("size") Optional<Integer> size,
+                           @RequestParam("sort") Optional<String> sortStr){
         logger.info("List page requested");
 
-        List<UserRepr> users;
-        if (usernameFilter.isPresent() && !usernameFilter.get().isBlank()) {
-            users = userService.findWithFilter(usernameFilter.get());
-        } else {
-            users = userService.findAll();
-        }
+        Sort sort = sortStr.map(Sort::by).orElse(defaultSort);
+        Page<UserRepr> users = userService.findWithFilter(
+                usernameFilter.filter(s -> !s.isBlank()).orElse(null),
+                ageMinFilter.orElse(null),
+                ageMaxFilter.orElse(null),
+                page.orElse(1) - 1,
+                size.orElse(4),
+                sort.descending()
+        );
         model.addAttribute("users", users);
         return "user";
     }
@@ -51,7 +67,7 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public String update(@Valid UserRepr user, BindingResult result){
+    public String update(@Valid @ModelAttribute("user") UserRepr user, BindingResult result, Model model){
         logger.info("Update endpoint requested");
 
         // проверяем на валидность
@@ -85,4 +101,12 @@ public class UserController {
         userService.delete(id);
         return "redirect:/user";
     }
+
+    @ExceptionHandler
+    public ModelAndView notFoundExceptionHandler(NotFoundException ex){
+        ModelAndView mav = new ModelAndView("not_found");
+        mav.setStatus(HttpStatus.NOT_FOUND);
+        return  mav;
+    }
+
 }

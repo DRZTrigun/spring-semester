@@ -1,5 +1,8 @@
 package geek.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -7,7 +10,8 @@ public interface UserService {
 
     List<UserRepr> findAll();
 
-    List<UserRepr> findWithFilter(String usernameFilter);
+    Page<UserRepr> findWithFilter(String usernameFilter, Integer minAge, Integer maxAge,
+                                  Integer page, Integer size, Sort sort);
 
     Optional<UserRepr> findById(long id);
 

@@ -1,20 +1,27 @@
 package geek.store;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.net.Socket;
 import java.util.List;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
-//    List<Product> findProductByTitle(String title);
+    @Query("select p from Product p " +
+            "where (p.title like concat('%',:title,'%') or :title is null) and " +
+            "(p.price >= :minPrice or :minPrice is null) and " +
+            "(p.price <= :maxPrice or :maxPrice is null)" +
+            "order by p.id, p.title, p.price desc ")
+    List<Product> findWithFilter(@Param("title") String titleFilter,
+                                 @Param("minPrice") BigDecimal minPrice,
+                                 @Param("maxPrice") BigDecimal maxPrice,
+                                 @Param("sort") Sort sort);
 
-    @Query("select p from Product p where p.title like concat('%',:title,'%') ")
-    List<Product> findProductByTitle(@Param("title") String title);
-
-//    @Query("select p from Product p order by p.price ASC ")
-//    List<Product> findProductsByPrice (@Param("title") String title);
 }
