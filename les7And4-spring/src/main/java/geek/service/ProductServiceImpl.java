@@ -11,7 +11,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<ProductRepr> findByFilter (String titleFilter, BigDecimal minPrice, BigDecimal maxPrice,
-                                           Integer page, Integer size, Sort sort) {
+                                           Integer page, Integer size, String sortField) {
 
         Specification<Product> spec = Specification.where(null);
 
@@ -50,9 +49,13 @@ public class ProductServiceImpl implements ProductService {
             spec = spec.and(ProductSpecification.maxPrice(maxPrice));
         }
 
-        spec = spec.and(ProductSpecification.sort(sort));
+        if (sortField != null && !sortField.isBlank()) {
+            return productRepository.findAll(spec, PageRequest.of(page, size, Sort.by(sortField)))
+                    .map(ProductRepr::new);
+        }
 
-        return productRepository.findAll(spec, PageRequest.of(page, size, sort)).map(ProductRepr::new);
+        return productRepository.findAll(spec, PageRequest.of(page, size))
+                .map(ProductRepr::new);
     }
 
     @Transactional
@@ -64,7 +67,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     @Override
-    public void save(ProductRepr product) { productRepository.save(new Product(product)); }
+    public void save(ProductRepr product) {
+        Product productToSave = new Product(product);
+        productRepository.save(productToSave);
+        if (product.getId() == null) {
+            product.setId(productToSave.getId());
+        }
+    }
 
     @Override
     public void delete(long id) { productRepository.deleteById(id); }

@@ -1,6 +1,5 @@
 package geek.persist;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 public final class UserSpecification {
@@ -17,7 +16,4 @@ public final class UserSpecification {
         return ((root, query, cb) -> cb.le(root.get("age"), maxAge));
     }
 
-    public static Specification<User> sort(Sort sort){
-        return sort(Sort.by("id"));
-    }
 }

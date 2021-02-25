@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -27,9 +25,6 @@ public class ProductController {
 
     private final ProductService productService;
 
-
-
-    private final Sort defualt = Sort.by("id");
 
     @Autowired
     public ProductController(ProductService productService){
@@ -42,18 +37,17 @@ public class ProductController {
                            @RequestParam("priceMaxFilter")Optional<BigDecimal> priceMaxFilter,
                            @RequestParam("page")Optional<Integer> page,
                            @RequestParam("size")Optional<Integer> size,
-                           @RequestParam("sort")Optional<String> sortStr
+                           @RequestParam("sortField")Optional<String> sortField
     ){
         logger.info("List page requested");
 
-        Sort sort = sortStr.map(Sort::by).orElse(defualt);
         Page<ProductRepr> products = productService.findByFilter(
-                titleFilter.filter(s -> s.isBlank()).orElse(null),
+                titleFilter.orElse(null),
                 priceMinFilter.orElse(null),
                 priceMaxFilter.orElse(null),
                 page.orElse(1) - 1,
                 size.orElse(4),
-                sort.descending()
+                sortField.orElse(null)
         );
         model.addAttribute("products", products);
         return "product";

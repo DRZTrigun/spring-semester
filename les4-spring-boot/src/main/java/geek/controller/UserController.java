@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,8 +27,6 @@ public class UserController {
 
     private final UserService userService;
 
-    private final Sort defaultSort = Sort.unsorted();
-
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
@@ -41,17 +38,17 @@ public class UserController {
                            @RequestParam("ageMaxFilter")Optional<Integer> ageMaxFilter,
                            @RequestParam("page") Optional<Integer> page,
                            @RequestParam("size") Optional<Integer> size,
-                           @RequestParam("sort") Optional<String> sortStr){
+                           @RequestParam("sortField") Optional<String> sortField
+    ){
         logger.info("List page requested");
 
-        Sort sort = sortStr.map(Sort::by).orElse(defaultSort);
         Page<UserRepr> users = userService.findWithFilter(
-                usernameFilter.filter(s -> !s.isBlank()).orElse(null),
+                usernameFilter.orElse(null),
                 ageMinFilter.orElse(null),
                 ageMaxFilter.orElse(null),
                 page.orElse(1) - 1,
                 size.orElse(4),
-                sort.descending()
+                sortField.orElse(null)
         );
         model.addAttribute("users", users);
         return "user";
