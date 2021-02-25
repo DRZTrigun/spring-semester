@@ -1,5 +1,6 @@
 package geek.service;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import geek.persist.User;
 
 import javax.validation.constraints.Email;
@@ -16,6 +17,7 @@ public class UserRepr {
     @NotEmpty
     private String password;
 
+    @JsonIgnore
     @NotEmpty
     private String matchingPassword;
 

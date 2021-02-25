@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Page<UserRepr> findWithFilter(String usernameFilter, Integer minAge, Integer maxAge,
-                                         Integer page, Integer size, Sort sort) {
+                                         Integer page, Integer size, String sortField) {
 
         Specification<User> spec = Specification.where(null);
 
@@ -48,9 +48,12 @@ public class UserServiceImpl implements UserService{
             spec = spec.and(UserSpecification.maxAge(maxAge));
         }
 
-        spec = spec.and(UserSpecification.sort(sort));
-
-        return userRepository.findAll(spec, PageRequest.of(page, size, sort)).map(UserRepr::new);
+        if (sortField != null && !sortField.isBlank()) {
+            return userRepository.findAll(spec, PageRequest.of(page, size, Sort.by(sortField)))
+                    .map(UserRepr::new);
+        }
+        return userRepository.findAll(spec, PageRequest.of(page, size))
+                .map(UserRepr::new);
     }
 
     @Transactional
@@ -62,7 +65,13 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     @Override
-    public void save(UserRepr user) { userRepository.save(new User(user)); }
+    public void save(UserRepr user) {
+        User userToSave = new User(user);
+        userRepository.save(userToSave);
+        if (user.getId() == null) {
+            user.setId(userToSave.getId());
+        }
+    }
 
     @Override
     public void delete(long id) { userRepository.deleteById(id); }

@@ -18,8 +18,4 @@ public final class ProductSpecification {
     public static Specification<Product> maxPrice(BigDecimal maxPrice){
         return ((root, query, cb) -> cb.le(root.get("price"), maxPrice));
     }
-
-    public static Specification<Product> sort(Sort sort){
-        return (Specification<Product>) sort.descending();
-    }
 }

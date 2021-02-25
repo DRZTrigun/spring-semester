@@ -1,0 +1,33 @@
+GET http://localhost:8088/spring-mvc-app/api/v1/product/all
+
+###
+
+GET http://localhost:8088/spring-mvc-app/api/v1/product/9
+
+###
+
+POST http://localhost:8088/spring-mvc-app/api/v1/product
+Content-Type: application/json
+
+{
+  "title": "Strawberry",
+  "descriptionproduct": "red",
+  "price": 67.99
+}
+
+
+###
+PUT http://localhost:8088/spring-mvc-app/api/v1/product
+Content-Type: application/json
+
+{
+  "id": 9,
+  "title": "Strawberry",
+  "descriptionproduct": "red or white",
+  "price": 67.99
+}
+
+
+###
+
+DELETE http://localhost:8088/spring-mvc-app/api/v1/product/9

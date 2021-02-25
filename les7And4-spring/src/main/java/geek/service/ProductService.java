@@ -12,7 +12,7 @@ public interface ProductService {
     List<ProductRepr> findAll();
 
     Page<ProductRepr> findByFilter(String titleFilter, BigDecimal minPrice, BigDecimal maxPrice,
-                                   Integer page, Integer size, Sort sort);
+                                   Integer page, Integer size, String sortField);
 
     Optional<ProductRepr> findById(long id);
 
